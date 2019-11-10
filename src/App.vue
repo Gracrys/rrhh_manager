@@ -1,23 +1,52 @@
 <template>
   <main id="app">
   <Header />
-  <Proyectos></Proyectos>
-  <Empleados></Empleados>
-    <img alt="Vue logo" src="./assets/logo.png">
+  <section>
+    <Proyectos></Proyectos>
+    <Empleados></Empleados>
+
+    <Window
+        v-show="isModalVisible"
+        @close="closeModal"
+        position="left"
+      />
+    </section>
   </main>
 </template>
 
 <script>
 import HelloWorld from './components/HelloWorld.vue'
 import Header from './components/header/Header.vue'
+import Window from './components/Window.vue'
+import Proyectos from './components/Proyectos/Proyectos'
+import Empleados from './components/Empleados/Empleados'
+
 
 export default {
   name: 'app',
   components: {
     HelloWorld,
-    Header
+    Header,
+    Window,
+    Proyectos,
+    Empleados
+  },
+   methods: {
+      showModal() {
+        this.isModalVisible = true;
+        this.$emit('showModal')
+      },
+      closeModal() {
+        this.isModalVisible = false;
+      },
+    },
+     data () {
+      return {
+        isModalVisible: false,
+      }
   }
 }
+
 </script>
 
 <style lang="scss">
