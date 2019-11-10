@@ -14,10 +14,15 @@
 			 v-show="isModalVisible"
         @close="closeModal">
 			<header  slot="name"><h1> its a me</h1></header>
-			<section slot="body">
-				
+			<NewProyect v-if="isNew" slot="body"/>
+			<section v-else slot="body">
+				<h3 role="title">
 				<ul>
-					<li>rip man</li>
+					<li><b> Descripcion </b>rip man</li>
+					<li><b> Tipo </b>rip man</li>
+					<li><b> Fecha de Inicio </b>rip man</li>
+					<li><b> Fecha de finalizacion estimada </b>rip man</li>
+					<li><b> Duracion (estimada) </b>rip man</li>
 				</ul>
 			</section>
 		</Window>
@@ -25,13 +30,14 @@
 </template>
 
 <script>
-
+import NewProyect from './NewProyect'
 export default {
   name: 'Proyectos',
   props: {
     msg: String
   },
   components: {
+  	NewProyect
   },
    methods: {
       showModal() {
@@ -44,7 +50,7 @@ export default {
      data () {
       return {
         isModalVisible: false,
-        isForm: false
+        isNew: false
       }   
   }
 }

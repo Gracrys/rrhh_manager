@@ -17,6 +17,6 @@ export default {
 <style scoped lang="scss">
   header{
       height: 80px;
-      width: 100vw;
+      // width: 100vw;
       background-color: #C0C0C0;}
 </style>

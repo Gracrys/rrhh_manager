@@ -14,8 +14,11 @@
 			 v-show="isModalVisible"
 		        @close="closeModal">
 			<header  slot="name"><h1> Jose Perez</h1></header>
-			<section slot="body">
-				
+			<NewEmpleado v-if="isNew" slot="body"/>
+
+			<section v-else slot="body">
+				<h3 role="title">Empleado 1</h3>
+				<b>Proyectos</b>
 				<ul>
 					<li>Data</li>
 				</ul>
@@ -25,9 +28,13 @@
 </template>
 
 <script>
-	
+import NewEmpleado from './NewEmpleado'
+
 export default {
   name: 'Empleados',
+  components: {
+  	NewEmpleado
+  },
   props: {
     msg: String
   },
@@ -42,7 +49,7 @@ export default {
      data () {
       return {
         isModalVisible: false,
-        isForm: false
+        isNew: false
       }   
   }
 }

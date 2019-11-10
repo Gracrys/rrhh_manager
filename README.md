@@ -32,6 +32,7 @@ See [Configuration Reference](https://cli.vuejs.org/config/).
 
 [x] Done functionality
 [X] Gonna work on some transitions for slider
-[ ] Form components
+[X] Form components
 [ ] Api consumption
-[ ] and conditional render for slider or window or whatever
+[X] and conditional render for slider or window or whatever
+[ ] edit data on doble click
