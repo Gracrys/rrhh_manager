@@ -1,5 +1,5 @@
 <template>
-	<aside class="main_info">
+	<aside class="main_info right">
 		<header class="top_title right">
 			<h4>Empleados</h4>
 			<button @click="showModal">+</button>

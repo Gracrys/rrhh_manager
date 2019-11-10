@@ -31,7 +31,7 @@ See [Configuration Reference](https://cli.vuejs.org/config/).
 ## TO DO
 
 [x] Done functionality
-[ ] Gonna work on some transitions for slider
+[X] Gonna work on some transitions for slider
 [ ] Form components
 [ ] Api consumption
 [ ] and conditional render for slider or window or whatever

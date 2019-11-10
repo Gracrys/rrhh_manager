@@ -1,4 +1,5 @@
 <template>
+	<transition name="swipe">
 	<aside :class="['blinds_' + this.position, 'blinds' ]">
 		<slot name="header">
 			This is the default tile!
@@ -18,6 +19,7 @@
       </slot>
 
 	</aside>
+	</transition>
 </template>
 
 <script>
@@ -50,4 +52,13 @@ aside.blinds
 		&right
 			right: 0
 
+.swipe-enter-active, .swipe-leave-active
+  transition: all .5s
+ 
+
+.swipe-enter, .swipe-leave-to /* .fade-leave-active below version 2.1.8 */
+  &.blinds_left 
+    transform: translateX(-50vw)
+  &.blinds_right
+  	transform: translateX(50vw)  
 </style>

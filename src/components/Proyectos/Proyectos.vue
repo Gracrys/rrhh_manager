@@ -1,5 +1,5 @@
 <template>
-	<aside class="main_info">
+	<aside class="main_info left">
 		<header class="top_title left">
 			<h4>Proyectos</h4>
 			<button @click="showModal">+</button>
