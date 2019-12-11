@@ -34,15 +34,13 @@ e.post('/auth',
 
     if(req.get("secretKey") && req.body.user){
         res.cookie("secretSessionValidator",req.get("secretKey"))
-        console.log(req.cookies, res.cookies)
-        console.log(">>" + req.body.user)
            res.json({'auth': true});
     }
 
   });
 
-e.use((req, res, next) {
-    if (!req.cookie) return res.sendStatus(401)
+e.use(function(req, res, next) {
+    if (!req.cookies.secretSessionValidator) return res.sendStatus(401)
     next()
 })
 

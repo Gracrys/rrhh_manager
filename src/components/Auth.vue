@@ -53,6 +53,9 @@
           .finally(x => console.log(x))
       }      
     },
+    mounted( ){
+     this.ok = document.cookie.includes("secretSessionValidator") 
+    },
     props: {
         }
   };
