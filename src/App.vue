@@ -11,6 +11,7 @@
         position="left"
       />
     </section>
+    <Auth />
   </main>
 </template>
 
@@ -20,7 +21,7 @@ import Header from './components/header/Header.vue'
 import Window from './components/Window.vue'
 import Proyectos from './components/Proyectos/Proyectos'
 import Empleados from './components/Empleados/Empleados'
-
+import Auth from './components/Auth.vue'
 
 export default {
   name: 'app',
@@ -29,7 +30,8 @@ export default {
     Header,
     Window,
     Proyectos,
-    Empleados
+    Empleados,
+    Auth
   },
    methods: {
       showModal() {

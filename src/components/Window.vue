@@ -53,12 +53,12 @@ aside.blinds
 			right: 0
 
 .swipe-enter-active, .swipe-leave-active
-  transition: all .5s
+	transition: all .5s
  
 
 .swipe-enter, .swipe-leave-to /* .fade-leave-active below version 2.1.8 */
-  &.blinds_left 
-    transform: translateX(-50vw)
-  &.blinds_right
-  	transform: translateX(50vw)  
+	&.blinds_left 
+		transform: translateX(-50vw)
+	&.blinds_right
+		transform: translateX(50vw)  
 </style>

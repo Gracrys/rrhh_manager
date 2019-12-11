@@ -20,9 +20,9 @@ npm run build
 npm run test
 ```
 
-### Lints and fixes files
+### To run both server and vue app in development
 ```
-npm run lint
+npm run dev
 ```
 
 ### Customize configuration

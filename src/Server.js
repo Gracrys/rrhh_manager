@@ -1,105 +1,78 @@
-var express = require('express');
+var e = require('express')();
+var mysql = require('mysql');
 const Vue = require('vue')
-const server = express();
-var eVue = require("express-vue");
-// var eVue = require('@doweb/vuexpress').vueRenderer;
+// const server = e();
 const cors = require('cors');
 const path = require("path");
-const renderer = require('vue-server-renderer').createRenderer()
+const bodyParser = require('body-parser')
+const db =  require("./server/db_config")
 
+// var session = require('express-session');
 // const fs = require('fs');
-// app.use(cors());
-// app.use(require('body-parser')());
+e.use(cors({
+    origin: true,
+    credentials: true }));
 
-// function readPosts () {
-// 	return JSON.parse(fs.readFileSync('./storage/posts.json', 'utf8'));
-// }
-// const vueOptions = {
-// 	views: './src',
-	
-// 	watch: false,
-	
-// 	publicPath: './public',
-// 	 onError: (err) => console.log("help" , err), // error handler
-//     onReady: () => console.log("success")
-// };
+e.use(bodyParser.urlencoded({ extended: false }));
+e.use(bodyParser.json());
+e.use(require('cookie-parser')("Cheeta"));
+// e.use(e.cookieParser());
+//entry point for server
+//database connection
+db.connect(function(err) {
+  if (err) throw err;
+  console.log("Connected!");
+var sql = "INSERT INTO users (username,employee_id, pass, secret_key, user_type) VALUES ('admin', 1, 123456, 'moody toxicroak', 1)";
+  db.query(sql, function (err, result) {
+    if (err) throw err;
+    console.log("0 record inserted");
+  });
+});
 
-//     //Setup
-//     const env = process.env.NODE_ENV || "development";
-//     const router = express.Router();
-//     let logType = "dev";
-//     app.locals.ENV = env;
-//     app.locals.ENV_DEVELOPMENT = (env === "development");
-//     app.locals.rootPath = process.env.ROOT_PATH;
+e.post('/auth', 
+  function(req,res){
 
-//     //ExpressVue Setup
-    
+    if(req.get("secretKey") && req.body.user){
+        res.cookie("secretSessionValidator",req.get("secretKey"))
+        console.log(req.cookies, res.cookies)
+        console.log(">>" + req.body.user)
+           res.json({'auth': true});
+    }
 
-// const vueOptions = {
-//     rootPath: path.join(__dirname, '../src')
-// };
-// // eVue.use(app, vueOptions);
-// const expressVueMiddleware = eVue.init(vueOptions);
-//     app.use(expressVueMiddleware);
-// // const renderer = eVue(vueOptions);
-// // app.use(renderer);
-// app.use(express.static(path.join(__dirname, 'src')));
-// // const expressVueMiddleware = eVue.init(vueOptions);
-// // eVue.use(app, vueOptions)
-//     //the rest of your express routes.
-// app.use("/", router);
-// // app.use(expressVueMiddleware).then(x => {
-// app.get('/', 
-// 	function(req, res){
-// 		// res.json(readPosts());
-// 		const data = {
-//         otherData: 'Something Else'
-//     };
-//     req.vueOptions = {
-//         head: {
-//             title: 'RRHH Manager',
-            
-//         }
-//     }
-//     console.log("/")
-//      res.renderVue('./App.vue');
-//     // res.render('./App.vue', {newData : "myData"});
-// });
-import app from './App.vue'
-const app1 = new Vue({
-  render: h => h(xApp),
-}).$mount('#app')
+  });
 
-server.get('*', (req, res) => {
-  const app = new Vue({
-    data: {
-      url: req.url
-    },
-    template: `<div>The visited URL is: {{ url }}</div>`
-  })
-
- renderer.renderToString(app1).then(html => {
-  console.log(html)
-}).catch(err => {
-  console.error(err)
-})
+e.use((req, res, next) {
+    if (!req.cookie) return res.sendStatus(401)
+    next()
 })
 
-// app.post('/', 
-// 	function(req, res){
-// 		// console.log(req)
-// 		console.log(req.body)
-// 		// console.log(req.header)
-// 		// console.log(res)
-// 		var newPost = Array.from(JSON.parse(fs.readFileSync('./storage/posts.json', 'utf8')))
-// 		newPost.push(req.body)
-// 		console.log(newPost)
-// 		fs.writeFile('./storage/postState.json', JSON.stringify(newPost), function(err) {
-// 		  // If an error occurred, show it and return
-// 		  if(err) return console.error(err);
-// 		  // Successfully wrote to the file!
-// 		});
-// 	});
 
-server.listen(8081);
-console.log("Server Listening on port 3001....");
+
+e.get('/rrhh_api', 
+  function(req,res){
+
+           res.json({hey: "listen"});
+  });
+
+
+e.get('/test',function(req,res){
+  res.send(req.cookies)
+})
+
+// custom 404 page
+e.use(function(req, res){
+  res.type('text/plain');
+  res.status(404);
+  res.send('404 - Not Found');
+});
+
+// custom 500 page
+e.use(function(err, req, res, next){
+  console.error(err.stack);
+  res.type('text/plain');
+  res.status(500);
+  res.send('500 - Server Error');
+});
+
+
+e.listen(8081);
