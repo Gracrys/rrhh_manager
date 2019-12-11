@@ -1,0 +1,52 @@
+
+
+\:root
+  --titles: #1E0A1E
+  --light: #AD97AE
+  --gray: #bcc3ce
+  --secondary: #39B497
+
+body, html
+  padding: 0
+  margin: 0
+
+h1, h2
+  color: var(--titles)
+.my-0
+  margin-top: 0 
+  margin-bottom: 0 
+
+form
+  text-align: left
+
+*
+  box-sizing: border-box
+main 
+  min-height: 100vh
+  height: 100vh
+  > section
+    position: relative
+    height: 100%
+    min-height: 100%
+    max-height: 100%
+    display:ol
+header.top_title
+  width: 80%
+  align-items: center
+  &.right
+
+  button
+aside.main_info
+  width: 50%
+  height: 100%
+  float: left
+  padding-top: 2rem
+  background: #bcc3ce
+  display: flex
+  flex-direction: column
+  &.left
+    border-right: 2px solid #0000001c
+  &.right
+    align-items: flex-end
+aside.blinds
+  background-color: #cfcfcf

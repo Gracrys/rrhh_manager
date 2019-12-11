@@ -18,5 +18,5 @@ export default {
   header{
       height: 80px;
       // width: 100vw;
-      background-color: #C0C0C0;}
+      background-color: var(--secondary);}
 </style>

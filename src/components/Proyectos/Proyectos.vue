@@ -1,19 +1,19 @@
 <template>
 	<aside class="main_info left">
-		<header class="top_title left">
-			<h4>Proyectos</h4>
-			<button @click="fetching">+</button>
+		<header class="top_title bg-secondary left columns">
+			<h4 class="column my-0 ">Proyectos</h4>
+      <button @click="showModal" class="btn btn-primary column col-1 my-0"><i class="icon icon-plus"></i></button>
 		</header>
 		<section>
 			<ul>
 				<li></li>
 			</ul>
 		</section>
-		<Window 
-			position="right"
+    <Window 
+      position="right"
 			 v-show="isModalVisible"
         @close="closeModal">
-			<header  slot="name"><h1> its a me</h1></header>
+			<template  slot="header"> its a me</template>
 			<NewProyect v-if="isNew" slot="body"/>
 			<section v-else slot="body">
 				<h3 role="title"> Nombre de proyecto </h3>
@@ -69,7 +69,7 @@ export default {
      data () {
       return {
         isModalVisible: false,
-        isNew: false,
+        isNew: true,
         projects: {}
       }   
   },

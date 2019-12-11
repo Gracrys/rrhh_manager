@@ -1,19 +1,20 @@
 <template>
 	<transition name="swipe">
-	<aside :class="['blinds_' + this.position, 'blinds' ]">
-		<slot name="header">
-			This is the default tile!
-
-          <button
+    <aside :class="['blinds_' + this.position, 'blinds', 'card' ]">
+      <header class="columns card-header">
+        <section class="col-11">
+         <slot  name="header">
+            This is the default tile!
+        </slot>
+        </section>
+		          <button
             type="button"
-            class="btn-close"
+            class="btn-close col-1 btn btn-link"
             @click="close"
           >
-            x
+            <i class="icon icon-cross"></i>
           </button>
-
-      </slot>
-
+      </header>
       <slot name="body">
       	 I'm the default body!
       </slot>

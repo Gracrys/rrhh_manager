@@ -1,8 +1,8 @@
 <template>
-	<aside class="main_info right">
-		<header class="top_title right">
-			<h4>Empleados</h4>
-			<button @click="showModal">+</button>
+	<aside class="main_info  right">
+		<header class="top_title bg-secondary right columns">
+      <button @click="showModal"class="btn btn-primary column col-1 my-0"><i class="icon icon-plus"></i></button>
+			<h4 class="column my-0 ">Empleados</h4>
 		</header>
 		<section>
 			<ul>
