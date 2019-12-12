@@ -2,7 +2,7 @@
 	<aside class="main_info left">
 		<header class="top_title bg-secondary left columns">
 			<h4 class="column my-0 ">Proyectos</h4>
-      <button @click="showModal" class="btn btn-primary column col-1 my-0"><i class="icon icon-plus"></i></button>
+      <button @click="() => {isNew = true; showModal() }" class="btn btn-primary column col-1 my-0"><i class="icon icon-plus"></i></button>
 		</header>
 		<section>
 			<ul>

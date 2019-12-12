@@ -22,11 +22,12 @@ e.use(require('cookie-parser')("Cheeta"));
 db.connect(function(err) {
   if (err) throw err;
   console.log("Connected!");
-var sql = "INSERT INTO users (username,employee_id, pass, secret_key, user_type) VALUES ('admin', 1, 123456, 'moody toxicroak', 1)";
-  db.query(sql, function (err, result) {
+    var sql = "";
+// sql = "INSERT INTO users (username,employee_id, pass, secret_key, user_type) VALUES ('admin', 1, 123456, 'moody toxicroak', 1)";
+  /*db.query(sql, function (err, result) {
     if (err) throw err;
     console.log("0 record inserted");
-  });
+  }); */
 });
 
 e.post('/auth', 
@@ -52,6 +53,21 @@ e.get('/rrhh_api',
            res.json({hey: "listen"});
   });
 
+e.post('/rrhh_api/proyects/new', function(req,res){
+    console.log(req.body)
+})
+
+e.post('/rrhh_api/employees/new', function(req,res){
+    let {CI, name, last_name, address, telephone, email, initial_date} = req.body
+
+    sql = `INSERT INTO employee (CI,name, lastname, address,telephone, email, initial_date) VALUES (${CI}, '${name}', '${last_name}', '${address}', '${telephone}', '${email}', '${initial_date}')`;
+  db.query(sql, function (err, result) {
+      console.log(sql)
+    if (err) throw err;
+      res.send("1 record added")
+  }); 
+
+})
 
 e.get('/test',function(req,res){
   res.send(req.cookies)
