@@ -86,9 +86,12 @@ export default {
   	}
         fetch("http://localhost:8081/rrhh_api/employees/new", headers)
         .then(res => res.json())
-          .then(res => {Object.values(this.form).forEach(x => x = "") })
+          .then(res =>{ this.form = {}
+          })
           .catch(x => console.warn(x))
           .finally(x => console.log(x))
+    
+          this.form = {}
       }     
       
     },
