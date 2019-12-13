@@ -64,9 +64,18 @@ e.post('/rrhh_api/employees/new', function(req,res){
   db.query(sql, function (err, result) {
       console.log(sql)
     if (err) throw err;
-      res.send("1 record added")
+      res.send("1 employee added")
   }); 
+})
 
+e.post('/rrhh_api/employees/all', function(req,res){
+
+    sql = `select * from employee`;
+  db.query(sql, function (err, result) {
+      console.log(sql)
+    if (err) throw err;
+      res.json(result)
+  }); 
 })
 
 e.get('/test',function(req,res){

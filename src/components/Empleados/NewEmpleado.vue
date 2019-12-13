@@ -42,7 +42,7 @@
   </label>
   <input type="date" class="form-input column col-6" name="initial_date" v-model="form.initial_date">
 </div>
-	 <button class="btn btn-success" @click="newProyect($event)">Nuevo Empleado</button>
+	 <button class="btn btn-success float-right" @click="newProyect($event)">Nuevo Empleado</button>
 	</form>
 </template>
 
