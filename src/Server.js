@@ -64,9 +64,9 @@ e.post('/rrhh_api/proyects/new', function(req,res){
 });
     
 e.post('/rrhh_api/employees/new', function(req,res){
-    let {CI, name, last_name, address, telephone, email, initial_date} = req.body
+    let {CI, name, last_name, address, telephone, email, initial_date, speciality} = req.body
 
-    sql = `INSERT INTO employee (CI,name, lastname, address,telephone, email, initial_date) VALUES (${CI}, '${name}', '${last_name}', '${address}', '${telephone}', '${email}', '${initial_date}')`;
+    sql = `INSERT INTO employee (CI,name, lastname, address,telephone, email, initial_date, speciality) VALUES (${CI}, '${name}', '${last_name}', '${address}', '${telephone}', '${email}', '${initial_date}', '${speciality}')`;
   db.query(sql, function (err, result) {
     if (err) throw err;
       res.send("1 employee added")

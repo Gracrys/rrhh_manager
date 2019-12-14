@@ -6,24 +6,25 @@
 		</header>
 			<section class="panel">
 			<ul class="panel-body">
-        <li v-for="project in projects" @click="description" :key="project.keyname" class="bg-blue columns px-4"><h5 class="column m-2"><b>{{project.denominacion}}</b></h5></li>
+        <li v-for="project in projects" @click="description($event)" :id="project.keyname" :key="project.keyname" class="bg-blue columns px-4"><h5 class="column m-2"><b>{{project.denominacion}}</b></h5></li>
 			</ul>
 		</section>
     <Window 
       position="right"
 			 v-show="isModalVisible"
         @close="closeModal">
-        <template  slot="header"><h2>Nuevo Proyecto</h2></template>
+        <template  slot="header"><h2>{{ isNew ? "Nuevo Proyecto" : current.denominacion}}</h2></template>
 			<NewProyect v-if="isNew" slot="body" @send="reload"/>
 			<section v-else slot="body">
 				<h3 role="title"> Nombre de proyecto </h3>
 				<ul>
-					<li><b> Descripcion </b>rip man</li>
-					<li><b> Tipo </b>rip man</li>
-					<li><b> Fecha de Inicio </b>rip man</li>
-					<li><b> Fecha de finalizacion estimada </b>rip man</li>
-					<li><b> Duracion (estimada) </b>rip man</li>
-				</ul>
+					<li><b> Descripcion  y pautas </b>descripcion</li>
+					<li><b> status </b>{{current.status}}</li>
+          <li><b> Fecha de Inicio </b>{{current.start_date}}</li>
+					<li><b> Fecha de finalizacion estimada </b>{{current.finish_date}}</li>
+					<li><b> Duracion (estimada) </b>ni idea we</li>
+        </ul>
+        <h5> Tareas</h5>
 				<ul>
 					<li>(Nombre)</li>
 					<li>descripcion</li>
@@ -48,8 +49,9 @@ export default {
   	NewProyect
   },
   methods: {
-    description() {
+    description(e) {
       this.isNew = false;
+      this.current = this.projects.filter(x => x.keyname == e.currentTarget.id)[0]
       this.showModal();
     },
     reload() {
@@ -84,7 +86,8 @@ export default {
       return {
         isModalVisible: false,
         isNew: true,
-        projects: [] 
+        projects: [],
+        current : {}
       }   
   },
    

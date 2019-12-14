@@ -23,7 +23,14 @@
     Direccion
   </label>
   <input type="text" class="form-input column col-6" name="address" v-model="form.address">
+ </div>
+<div class="form-group columns">
+  <label class="form-label form-inline column col-6" for="">
+    Especialidad
+  </label>
+  <input type="text" class="form-input column col-6" name="speciality" v-model="form.speciality">
 </div>
+
 <div class="form-group columns">
   <label class="form-label form-inline column col-6" for="">
     Numero de Telefono
