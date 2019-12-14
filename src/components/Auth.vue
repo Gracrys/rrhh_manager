@@ -50,7 +50,7 @@
         .then(res => res.json())
           .then(res => this.ok = res.auth)
           .catch(x => console.warn(x))
-          .finally(x => console.log(x))
+          .finally(x => location.reload() )
       }      
     },
     mounted( ){

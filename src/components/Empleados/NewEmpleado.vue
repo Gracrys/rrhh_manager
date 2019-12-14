@@ -89,8 +89,8 @@ export default {
           .then(res =>{ this.form = {}
           })
           .catch(x => console.warn(x))
-          .finally(x => console.log(x))
-    
+          .finally(x => this.$emit('send'))
+
           this.form = {}
       }     
       

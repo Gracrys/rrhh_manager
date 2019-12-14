@@ -6,7 +6,7 @@
 		</header>
 		<section class="panel">
 			<ul class="panel-body">
-        <li v-for="employee in employees" class="bg-blue columns "><h5 class="column m-2"><b>{{employee.name + ' ' + employee.lastname}}</b></h5></li>
+        <li v-for="employee in employees" class="bg-blue columns px-2 "><h5 class="column m-2"><b>{{employee.name + ' ' + employee.lastname}}</b></h5></li>
 			</ul>
 		</section>
 		<Window 
@@ -14,7 +14,7 @@
 			 v-show="isModalVisible"
 		        @close="closeModal">
 			<header  slot="name"><h1> Jose Perez</h1></header>
-			<NewEmpleado v-if="isNew" slot="body"/>
+			<NewEmpleado v-if="isNew" slot="body" @send="reload"/>
 
 			<section v-else slot="body">
 				<h3 role="title">Empleado 1</h3>
@@ -30,6 +30,8 @@
 <script>
 import NewEmpleado from './NewEmpleado'
 
+import {employees} from '../../tools/alls'
+
 export default {
   name: 'Empleados',
   components: {
@@ -39,6 +41,13 @@ export default {
     msg: String
   },
   methods: {
+    reload() {
+      var self = this;
+       employees().then(function(res){
+      self.employees = res
+     return res; 
+    })
+    }, 
       showModal() {
         this.isModalVisible = true;
       },
@@ -47,21 +56,11 @@ export default {
       },
   },
   mounted(){
-    	const headers = {
-  		
-        method: 'POST',
-       headers: {...new Headers(), 'Accept': 'application/json',
-          'Content-Type': 'application/json',
-         'Cache': 'no-cache',
-       },
-       mode: 'cors',
-      credentials: 'include'
-  	}
-        fetch("http://localhost:8081/rrhh_api/employees/all", headers)
-        .then(res => res.json())
-          .then(res => this.employees = res)
-          .catch(x => console.warn(x))
-          .finally(x => console.log(x))
+    	var self = this;
+       employees().then(function(res){
+      self.employees = res
+     return res; 
+    })
   },
      data () {
       return {
@@ -75,6 +74,7 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="sass">
-
+ul.panel-body
+  margin: 2em -8px 0
    
 </style>

@@ -54,15 +54,20 @@ e.get('/rrhh_api',
   });
 
 e.post('/rrhh_api/proyects/new', function(req,res){
-    console.log(req.body)
-})
+    let {id, denominacion, start_date, finish_date, status, employees, promotor} = req.body
 
+    sql = `INSERT INTO proyects (keyname,denominacion, start_date, finish_date,status, employees_id, promotor_id) VALUES ('${id}', '${denominacion}', '${start_date}', '${finish_date}', '${status}', '${employees}', '${promotor}')`;
+  db.query(sql, function (err, result) {
+    if (err) throw err;
+      res.send("1 proyect added")
+  }); 
+});
+    
 e.post('/rrhh_api/employees/new', function(req,res){
     let {CI, name, last_name, address, telephone, email, initial_date} = req.body
 
     sql = `INSERT INTO employee (CI,name, lastname, address,telephone, email, initial_date) VALUES (${CI}, '${name}', '${last_name}', '${address}', '${telephone}', '${email}', '${initial_date}')`;
   db.query(sql, function (err, result) {
-      console.log(sql)
     if (err) throw err;
       res.send("1 employee added")
   }); 
@@ -72,7 +77,15 @@ e.post('/rrhh_api/employees/all', function(req,res){
 
     sql = `select * from employee`;
   db.query(sql, function (err, result) {
-      console.log(sql)
+    if (err) throw err;
+      res.json(result)
+  }); 
+})
+
+e.post('/rrhh_api/projects/all', function(req,res){
+
+    sql = `select * from proyects`;
+  db.query(sql, function (err, result) {
     if (err) throw err;
       res.json(result)
   }); 
