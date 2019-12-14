@@ -6,14 +6,14 @@
 		</header>
 		<section class="panel">
 			<ul class="panel-body">
-        <li v-for="employee in employees" class="bg-blue columns px-2 "><h5 class="column m-2"><b>{{employee.name + ' ' + employee.lastname}}</b></h5></li>
+        <li v-for="employee in employees" :id="employee.id" @click="description($event)" class="bg-blue columns px-2 "><h5 class="column m-2"><b>{{employee.name + ' ' + employee.lastname}}</b></h5></li>
 			</ul>
 		</section>
 		<Window 
 			position="left"
 			 v-show="isModalVisible"
 		        @close="closeModal">
-			<header  slot="name"><h1> Jose Perez</h1></header>
+			<template  slot="header"><h2 class="my-0"> {{isNew ? "Nuevo Empleado" : current.name + " " + current.lastname}} </h2></template>
 			<NewEmpleado v-if="isNew" slot="body" @send="reload"/>
 
 			<section v-else slot="body">
@@ -41,6 +41,13 @@ export default {
     msg: String
   },
   methods: {
+  description(e) {
+      this.isNew = false;
+      this.current = this.employees.filter(x => x.id == e.currentTarget.id)[0]
+      this.showModal();
+      console.log(this.current)
+    },
+
     reload() {
       var self = this;
        employees().then(function(res){
@@ -66,7 +73,8 @@ export default {
       return {
         isModalVisible: false,
         isNew: false,
-        employees: []
+        employees: [],
+        current: {}
       }   
   }
 }

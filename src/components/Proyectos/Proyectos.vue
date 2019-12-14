@@ -13,7 +13,7 @@
       position="right"
 			 v-show="isModalVisible"
         @close="closeModal">
-        <template  slot="header"><h2>{{ isNew ? "Nuevo Proyecto" : current.denominacion}}</h2></template>
+        <template  slot="header"><h2 class="my-0">{{ isNew ? "Nuevo Proyecto" : current.denominacion}}</h2></template>
 			<NewProyect v-if="isNew" slot="body" @send="reload"/>
 			<section v-else slot="body">
 				<h3 role="title"> Nombre de proyecto </h3>

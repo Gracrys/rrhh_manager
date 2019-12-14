@@ -1,5 +1,5 @@
 <template>
-  <form action="" class="form-group card-body">
+  <form action="" class="form-group card-body ">
     <div class="form-group columns">
       <label class="form-label form-inline column col-6" for="">
         Cedula o Documento de Identidad
@@ -104,3 +104,9 @@ export default {
     },
 }
 </script>
+<style lang="sass" scoped>
+form
+  margin: 2em
+  margin-left: 0
+
+</style>

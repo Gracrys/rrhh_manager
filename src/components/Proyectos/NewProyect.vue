@@ -112,3 +112,9 @@ export default {
 
 }
 </script>
+<style lang="sass" scoped>
+form
+  margin: 2em
+  margin-right: 0
+
+</style>
