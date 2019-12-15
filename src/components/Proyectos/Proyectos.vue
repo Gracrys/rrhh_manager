@@ -15,7 +15,8 @@
         @close="closeModal">
         <template  slot="header"><h2 class="my-0">{{ isNew ? "Nuevo Proyecto" : current.denominacion}}</h2></template>
 			<NewProyect v-if="isNew" slot="body" @send="reload"/>
-			<section v-else slot="body">
+      <section v-else slot="body" class="panel aside">
+        <div class="panel-header ">
 				<h3 role="title"> Nombre de proyecto </h3>
 				<ul>
 					<li><b> Descripcion  y pautas </b>descripcion</li>
@@ -24,11 +25,14 @@
 					<li><b> Fecha de finalizacion estimada </b>{{current.finish_date}}</li>
 					<li><b> Duracion (estimada) </b>ni idea we</li>
         </ul>
+        </div>
+        <div class="panel-body">
         <h5> Tareas</h5>
-				<ul>
-					<li>(Nombre)</li>
-					<li>descripcion</li>
-				</ul>
+          <ul>
+            <li>(Nombre)</li>
+            <li>descripcion</li>
+          </ul>
+        </div>
 			</section>
 		</Window>
 	</aside>
@@ -127,4 +131,9 @@ ul.panel-body
 .px-4 
   padding-right: 2em
   padding-left: 2em
+.aside
+  margin: 2em
+  margin-right: 0
+  box-shadow: 0px 0px 0px 4px #c0c0c0c0
+  border: none
 </style>

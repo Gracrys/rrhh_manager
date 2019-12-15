@@ -13,11 +13,21 @@
 			position="left"
 			 v-show="isModalVisible"
 		        @close="closeModal">
-			<template  slot="header"><h2 class="my-0"> {{isNew ? "Nuevo Empleado" : current.name + " " + current.lastname}} </h2></template>
+			<template  slot="header"><h2 class="my-0"> {{isNew ? "Nuevo Empleado" : current.name + " " + current.lastname + " #" + current.id}} </h2></template>
 			<NewEmpleado v-if="isNew" slot="body" @send="reload"/>
 
-			<section v-else slot="body">
-				<h3 role="title">Empleado 1</h3>
+      <section v-else slot="body" class="body-relative" style="position:relative">
+        <button style="position: absolute; right: 0; top: 0" @click="editable = true">edit</button>
+        <h5 role="title"><b>Datos:</b></h5>
+        <ul>
+          <li ><b  >Especialización: </b> <span ref="specialization" :contenteditable="editable">{{current.specialization}}</span></li>
+          <li ><b >Dirección: </b> <span @input="onInput($event)"  id="address" ref="address" :contenteditable="editable">{{current.address}} </span></li>
+          <li  ><b >Telefono: </b> <span ref="telephone" :contenteditable="editable"> {{current.telephone}} </span></li>
+              <li  ><b >Correo Electronico: </b> <span ref="email" :contenteditable="editable" >{{current.email}}</span></li>
+              <li  ><b >CI O DNI: </b><span ref="CI" :contenteditable="editable"> {{current.CI}}</span></li>
+              <li ><b >Fecha de Ingreso: </b> <span ref="start_date" :contenteditable="editable">{{current.initial_date}}</span></li>
+        </ul>
+        <button @click=" cancel">cancelar</button>
 				<b>Proyectos</b>
 				<ul>
 					<li>Data</li>
@@ -37,11 +47,15 @@ export default {
   components: {
   	NewEmpleado
   },
-  props: {
-    msg: String
-  },
   methods: {
-  description(e) {
+    onInput(e) {
+      this.toEdit[ e.currentTarget.id] = e.target.innerText
+    },
+    cancel () {
+      this.editable = false
+      Object.keys(this.toEdit).forEach(x => this.$refs[x].innerText  = this.current[x])
+     },
+      description(e) {
       this.isNew = false;
       this.current = this.employees.filter(x => x.id == e.currentTarget.id)[0]
       this.showModal();
@@ -74,7 +88,9 @@ export default {
         isModalVisible: false,
         isNew: false,
         employees: [],
-        current: {}
+        current: {},
+        editable: false,
+        toEdit: {}
       }   
   }
 }
