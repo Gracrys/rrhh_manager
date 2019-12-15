@@ -25,12 +25,40 @@
 					<li><b> Fecha de finalizacion estimada </b>{{current.finish_date}}</li>
 					<li><b> Duracion (estimada) </b>ni idea we</li>
         </ul>
+        <details>
+        <form action="">
+          <input placeholder="descripcion" required type="text" v-model="newTask.title"> 
+          <label>Fecha de entrega
+          <input type="date"  v-model="newTask.due_date">
+        </label>
+        <label> asignado a
+          <select id="" name=""  v-model="newTask.asignee"><option  v-for="employee in employees" :value="employee.id">{{employee.name + " " + employee.lastname}}</option></select>
+          </label>
+          <textarea v-model="newTask.description" id="" name="" placeholder="escriba una descripcion detallada" cols="30" rows="3"></textarea>
+
+          <label for="">
+            Estado de la tarea
+            <select id="" required name="" v-model="newTask.status">
+              <option value="1">Completado</option>
+              <option value="2">Por completar</option>
+              <option value="3">En proceso</option>
+              <option value="4">No aplica</option>
+              <option value="0">Eliminado</option>
+          </select>
+        </label>
+          <button @click="createTask($event)">Nueva Tarea</button>
+        </form>
+        </details>
         </div>
         <div class="panel-body">
         <h5> Tareas</h5>
           <ul>
-            <li>(Nombre)</li>
-            <li>descripcion</li>
+            <li v-for="task in taskList" :key="task.id" class="card">
+              <div class="card-header">{{task.title}}</div>
+              <div class="card-body">{{task.description}}
+                <b>{{currentEmployee(task.asignee)}}</b>
+              </div>
+            </li>
           </ul>
         </div>
 			</section>
@@ -40,7 +68,7 @@
 
 <script>
 
-import {projects} from '../../tools/alls'
+import {projects, tasks, employees} from '../../tools/alls'
 import NewProyect from './NewProyect'
 // import rrhhReq from './server/config'
 
@@ -53,9 +81,53 @@ export default {
   	NewProyect
   },
   methods: {
+    createTask(e) {
+      const self = this
+        e.preventDefault();
+
+       const bodyData = {
+          ...new FormData(),
+         ...this.newTask,
+         proyect: this.current.keyname
+       }
+        // formdata.append('user',this.user);
+        // formdata.append('pass',this.pass);
+      console.log(bodyData)
+  	const headers = {
+  		
+      method: 'POST',  
+      headers: {...new Headers(), 'Accept': 'application/json',
+          'Content-Type': 'application/json',
+         'Cache': 'no-cache',
+       },
+       mode: 'cors',
+      credentials: 'include',
+      body: JSON.stringify(bodyData)
+  	}
+        fetch("http://localhost:8081/rrhh_api/task/new", headers)
+        .then(res => res.json())
+          .then(res => this.ok = res.auth)
+          .catch(x => console.warn(x))
+          .finally(x => {
+              tasks(self.current.keyname).then(function(res){
+              console.log(res)
+              self.taskList = res
+              return res;
+            })
+          })
+              this.newTask = {}
+
+   }, 
+ 
     description(e) {
       this.isNew = false;
       this.current = this.projects.filter(x => x.keyname == e.currentTarget.id)[0]
+      const self = this
+      tasks(e.currentTarget.id).then(function(res){
+        console.log(res)
+        self.taskList = res
+        return res;
+      })
       this.showModal();
     },
     reload() {
@@ -84,6 +156,11 @@ export default {
     fetch("http://79.147.33.236/?secretkey=oh", headers)
         .then(res => res.text())
         .then(res => console.log(res))
+      },
+     currentEmployee (x){
+      let emp = this.employees.filter(y=> y.id == x)[0]
+        console.log(this.employees, emp)
+      return emp.name + " " + emp.lastname
     }
     },
      data () {
@@ -91,10 +168,14 @@ export default {
         isModalVisible: false,
         isNew: true,
         projects: [],
-        current : {}
+        current : {},
+        taskList: [],
+        employees : [],
+        newTask: {}
       }   
   },
-   
+  computed: {
+  } ,
   mounted() {
       var self = this;
        projects().then(function(res){
@@ -102,7 +183,11 @@ export default {
       self.projects = res
      return res; 
     })
-
+    employees().then(function(res){
+      console.log(res)
+      self.employees = res
+     return res; 
+    })
   
   	const headers = {
   		

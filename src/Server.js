@@ -73,6 +73,29 @@ e.post('/rrhh_api/employees/new', function(req,res){
   }); 
 })
 
+e.post('/rrhh_api/task/new', function(req,res){
+
+    let date = new Date()
+
+        let day = date.getDate()
+        let month = date.getMonth() + 1
+        let year = date.getFullYear()
+    var actualDate = "";
+        if(month < 10){
+          actualDate = (`${year}-0${month}-${day}`)
+        }else{
+           actualDate = (`${year}-${month}-${day}`)
+        }
+console.log(req.body, actualDate)
+    let {due_date, title, proyect, description, asignee, status} = req.body
+
+    sql = `INSERT INTO tasks (created_at, due_date, title, proyect, description, asignee, status) VALUES ('${actualDate}','${due_date}', '${title}', '${proyect}', '${description ? description : " " }', '${asignee ? asignee : ""}', ${status})`;
+  db.query(sql, function (err, result) {
+    if (err) throw err;
+      res.send("one task added")
+  }); 
+})
+
 e.post('/rrhh_api/employees/all', function(req,res){
 
     sql = `select * from employee`;
@@ -90,6 +113,17 @@ e.post('/rrhh_api/projects/all', function(req,res){
       res.json(result)
   }); 
 })
+ 
+e.post('/rrhh_api/tasks/all', function(req,res){
+        console.log(req.body)
+        const {id} = req.body
+    sql = `select * from tasks where proyect = '${id ? id : 0 }'`;
+  db.query(sql, function (err, result) {
+    if (err) throw err;
+      res.json(result)
+  }); 
+})
+
 
 e.get('/test',function(req,res){
   res.send(req.cookies)

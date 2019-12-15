@@ -37,4 +37,27 @@ const employees = function(){
 
 }
 
-export { employees, projects };
+const tasks = function(id){
+    const headers = {
+  		
+        method: 'POST',
+       headers: {...new Headers(), 'Accept': 'application/json',
+          'Content-Type': 'application/json',
+         'Cache': 'no-cache',
+       },
+       mode: 'cors',
+      credentials: 'include',
+        body:   JSON.stringify({
+            id :id 
+        })
+  	}
+       return fetch("http://localhost:8081/rrhh_api/tasks/all", headers)
+        .then(res => res.json())
+          .then(res => res)
+          .catch(x => console.warn(x))
+          .finally(x => console.log(x))
+
+}
+
+
+export { employees, projects, tasks };
