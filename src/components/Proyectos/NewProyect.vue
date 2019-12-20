@@ -6,7 +6,11 @@
     </div>
     <div class="form-group columns">
       <label for="denominacion" class="form-label form-inline column col-6">Nombre</label>
-      <input type="text" name="denominacion" class="form-input column col-6" v-model="form.denominacion">
+      <input type="text" required name="denominacion" class="form-input column col-6" v-model="form.denominacion">
+    </div>
+    <div class="form-group columns">
+      <label for="description" class="form-label form-inline column col-6">Descripcion</label>
+      <input type="text" name="description" class="form-input column col-6" v-model="form.description">
     </div>
     <div class="form-group columns">
       <label for="start_date" class="form-label form-inline column col-6">Fecha de Inicio</label>
@@ -18,10 +22,11 @@
     </div>
     <div class="form-group columns">
       <label for="status" class="form-label form-inline column col-6">Estatus del proyecto</label>
-      <select type="text" name="status" class="form-date column col-6" v-model="form.status">
-        <option value="0" selected>En espera</option>
-        <option value="1">En proceso</option>
+      <select type="text" name="status" required class="form-date column col-6" v-model="form.status">
+        <option value="0" >Eliminada</option>
+        <option value="1" selected>En proceso</option>
         <option value="2">Finalizado</option>
+        <option value="3">Por completar</option>
       </select>
     </div>
     <div class="form-group columns"> 
@@ -60,6 +65,7 @@ export default {
   methods: {
     
       newProyect(e) {
+        if(this.form.status != "" && this.form.denominacion != "") {
         e.preventDefault();
         let fm = new FormData()
 
@@ -91,7 +97,7 @@ export default {
 
       }     
 
-
+    }
   },
   mounted() {
     const headers = {

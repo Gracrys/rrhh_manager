@@ -76,10 +76,10 @@ console.log(req.file)
 */
 e.post('/rrhh_api/proyects/new',  function(req,res){
 
-    let {id, denominacion, start_date, finish_date, status, employees, promotor} = req.body
+    let {id, denominacion, description ,start_date, finish_date, status, employees, promotor} = req.body
     const docs = __dirname + "/public/files"
 
-    sql = `INSERT INTO proyects (keyname,denominacion, start_date, finish_date,status, employees_id, promotor_id) VALUES ('${id}', '${denominacion}', '${start_date}', '${finish_date}', '${status}', '${employees}', '${promotor}')`;
+    sql = `INSERT INTO proyects (keyname,denominacion, start_date, finish_date,status, employees_id, promotor_id, description) VALUES ('${id}', '${denominacion}', '${start_date}', '${finish_date}', '${status}', '${employees ? employees : ""}', '${promotor ? promotor : ""}', ${description ? description : ""})`;
   db.query(sql, function (err, result) {
     if (err) throw err;
       res.send("1 proyect added")

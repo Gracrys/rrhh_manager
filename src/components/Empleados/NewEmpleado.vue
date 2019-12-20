@@ -71,6 +71,7 @@ export default {
   },
   methods: {
       newEmployee(e) {
+        if(Object.keys(inventory).length !== 0){
         e.preventDefault();
 
        const bodyData = {
@@ -100,7 +101,7 @@ export default {
 
           this.form = {}
       }     
-      
+      }
     },
 }
 </script>
