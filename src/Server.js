@@ -6,9 +6,15 @@ const cors = require('cors');
 const path = require("path");
 const bodyParser = require('body-parser')
 const db =  require("./server/db_config")
-
 // var session = require('express-session');
-// const fs = require('fs');
+ const fs = require('fs');
+//
+
+var multer  = require('multer')({dest: "public/docs/", 
+    filename: function (req, file, cb) {
+    cb(null, file.fieldname + '-' + Date.now() + file.originalname.match(/\.[0-9a-z]+$/i)[0])
+  }
+})
 e.use(cors({
     origin: true,
     credentials: true }));
@@ -16,6 +22,7 @@ e.use(cors({
 e.use(bodyParser.urlencoded({ extended: false }));
 e.use(bodyParser.json());
 e.use(require('cookie-parser')("Cheeta"));
+// e.use(formidable());
 // e.use(e.cookieParser());
 //entry point for server
 //database connection
@@ -53,16 +60,53 @@ e.get('/rrhh_api',
            res.json({hey: "listen"});
   });
 
-e.post('/rrhh_api/proyects/new', function(req,res){
+let pump = require('pump')
+
+const drainStream = stream =>
+  new Promise((resolve, reject) => {  let dataParts = [Buffer.alloc(0)] 
+    // this is so Buffer.concat doesn’t error if nothing comes;
+    stream.on('data', d=>dataParts.push(d));
+    stream.on('error', reject);
+    stream.on('close', ()=> {
+      resolve(Buffer.concat(dataParts)); console.log("until here")
+    });
+  });
+/*e.post('/rrhh_api/proyects/new', multer.single("doc") ,function(req,res){
+console.log(req.file)
+*/
+e.post('/rrhh_api/proyects/new',  function(req,res){
+
     let {id, denominacion, start_date, finish_date, status, employees, promotor} = req.body
+    const docs = __dirname + "/public/files"
 
     sql = `INSERT INTO proyects (keyname,denominacion, start_date, finish_date,status, employees_id, promotor_id) VALUES ('${id}', '${denominacion}', '${start_date}', '${finish_date}', '${status}', '${employees}', '${promotor}')`;
   db.query(sql, function (err, result) {
     if (err) throw err;
       res.send("1 proyect added")
-  }); 
+  });
+ console.log('body: ' + JSON.stringify(req.body));
+
+
 });
-    
+
+
+e.post('/rrhh_api/proyects/nex', multer.single("doc") ,function(req,res){
+console.log(req.file)
+    let {id, denominacion, start_date, finish_date, status, employees, promotor} = req.body
+    const docs = __dirname + "/public/files"
+
+    sql = `INSERT INTO proyects (keyname,denominacion, start_date, finish_date,status, employees_id, promotor_id) VALUES ('${id}', '${denominacion}', '${start_date}', '${finish_date}', '${status}', '${employees}', '${promotor}')`;
+  /*db.query(sql, function (err, result) {
+    if (err) throw err;
+      res.send("1 proyect added")
+  });*/
+ console.log('body: ' + JSON.stringify(req.body));
+
+
+});
+
+
+
 e.post('/rrhh_api/employees/new', function(req,res){
     let {CI, name, last_name, address, telephone, email, initial_date, speciality} = req.body
 
@@ -93,6 +137,97 @@ console.log(req.body, actualDate)
   db.query(sql, function (err, result) {
     if (err) throw err;
       res.send("one task added")
+  }); 
+})
+
+e.post('/rrhh_api/docs/new', multer.single("doc") ,function(req,res){
+console.log(req.file)
+    let { creation_date, task , description} = req.body
+    const docs = __dirname + "/public/files"
+console.log(req.body, req.files)
+    sql = `INSERT INTO docs (creation_date, type, task, file, description ) VALUES ('${creation_date}', '${req.file.mimetype}', ${task}, '${req.file.filename}', '${description}')`;
+  /*db.query(sql, function (err, result) {
+    if (err) throw err;
+      res.send("1 proyect added")
+  });*/
+
+});
+
+
+e.post('/rrhh_api/employees/update', function(req,res){
+
+    let rows = "";
+
+Object.keys(req.body).forEach((x, i, l) => {
+    if(x != "id"){
+            
+        if(i == l.length - 1)
+            rows += `${x} = '${req.body[x]}'`
+        else
+            rows += `${x} = '${req.body[x]}'`
+    } 
+
+
+})
+console.log(req.body)
+
+    sql = `UPDATE proyects SET ${rows} WHERE id = ${req.body.id};`
+
+console.log(sql)
+  db.query(sql, function (err, result) {
+    if (err) throw err;
+      res.send("1 proyect updated")
+  }); 
+
+})
+
+e.post('/rrhh_api/proyects/update', function(req,res){
+
+    let rows = "";
+
+Object.keys(req.body.update).forEach((x, i, l) => {
+    if(x != "id"){
+            
+        if(i == l.length - 1)
+            rows += `${x} = '${req.body[x]}'`
+        else
+            rows += `${x} = '${req.body[x]}'`
+    } 
+})
+console.log(req.body)
+
+    sql = `UPDATE proyects SET ${rows} WHERE id = ${req.body.id};`
+
+console.log(sql)
+  db.query(sql, function (err, result) {
+    if (err) throw err;
+      res.send("1 proyect updated")
+  }); 
+
+})
+e.post('/rrhh_api/tasks/update', function(req,res){
+
+    let rows = "";
+
+Object.keys(req.body.update).forEach((x, i, l) => {
+    if(x != "id"){
+            
+        if(i == l.length - 1)
+            rows += `${x} = '${req.body[x]}'`
+        else
+            rows += `${x} = '${req.body[x]}'`
+    } 
+
+})
+
+console.log(req.body)
+
+    sql = `UPDATE tasks SET ${rows} WHERE id = ${req.body.id};`
+
+console.log(sql)
+  db.query(sql, function (err, result) {
+    if (err) throw err;
+      res.send("1 task updated")
   }); 
 })
 

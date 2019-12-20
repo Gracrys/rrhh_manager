@@ -20,14 +20,19 @@
         <button style="position: absolute; right: 0; top: 0" @click="editable = true">edit</button>
         <h5 role="title"><b>Datos:</b></h5>
         <ul>
-          <li ><b  >Especialización: </b> <span ref="specialization" :contenteditable="editable">{{current.specialization}}</span></li>
+          <li ><b  >Especialización: </b> <span id="specialization" @input="onInput($event)" ref="specialization" :contenteditable="editable">{{current.specialization}}</span></li>
           <li ><b >Dirección: </b> <span @input="onInput($event)"  id="address" ref="address" :contenteditable="editable">{{current.address}} </span></li>
-          <li  ><b >Telefono: </b> <span ref="telephone" :contenteditable="editable"> {{current.telephone}} </span></li>
-              <li  ><b >Correo Electronico: </b> <span ref="email" :contenteditable="editable" >{{current.email}}</span></li>
-              <li  ><b >CI O DNI: </b><span ref="CI" :contenteditable="editable"> {{current.CI}}</span></li>
-              <li ><b >Fecha de Ingreso: </b> <span ref="start_date" :contenteditable="editable">{{current.initial_date}}</span></li>
-        </ul>
-        <button @click=" cancel">cancelar</button>
+          <li  ><b >Telefono: </b> <span ref="telephone" id="telephone" @input="onInput($event)" :contenteditable="editable"> {{current.telephone}} </span></li>
+          <li  ><b >Correo Electronico: </b> <span ref="email" id="email" @input="onInput($event)" :contenteditable="editable" >{{current.email}}</span></li>
+
+          
+              <li  ><b >CI O DNI: </b><span ref="CI" id="CI"  contenteditable="editable"> {{current.CI}}</span></li>
+              <li ><b >Fecha de Ingreso: </b> <span ref="initial_date" id="initial_date" @input="onInput($event)" :contenteditable="editable">{{current.initial_date}}</span></li>
+            </ul>
+          <footer>
+          <button @click="cancel">cancelar</button>
+          <button @click="update">Actualizar</button>    
+        </footer>
 				<b>Proyectos</b>
 				<ul>
 					<li>Data</li>
@@ -49,17 +54,47 @@ export default {
   },
   methods: {
     onInput(e) {
-      this.toEdit[ e.currentTarget.id] = e.target.innerText
+      this.toEdit[e.currentTarget.id] = e.target.innerText
     },
     cancel () {
       this.editable = false
       Object.keys(this.toEdit).forEach(x => this.$refs[x].innerText  = this.current[x])
-     },
+         this.toEdit = {}
+    },
+       update() {
+
+       const bodyData = {
+        
+         id : this.current.id,
+         ...this.toEdit
+       }
+        // formdata.append('user',this.user);
+        // formdata.append('pass',this.pass);
+  	const headers = {
+  		
+        method: 'POST',
+       headers: {...new Headers(), 'Accept': 'application/json',
+          'Content-Type': 'application/json',
+         'Cache': 'no-cache',
+       },
+       mode: 'cors',
+      credentials: 'include',
+      body: JSON.stringify(bodyData)
+  	}
+         if(Object.entries(this.toEdit).length >= 0) fetch("http://localhost:8081/rrhh_api/employees/update", headers)
+        .then(res => res.json())
+          .then(res => res )
+          .catch(x => console.warn(x))
+          .finally(x => this.$emit('send'))
+
+          this.editable = false
+         // Object.keys(this.toEdit).forEach(x => this.$refs[x].innerText  = this.current[x])
+         this.toEdit = {}
+      } ,
       description(e) {
       this.isNew = false;
-      this.current = this.employees.filter(x => x.id == e.currentTarget.id)[0]
+     this.current = this.employees.filter(x => x.id == e.currentTarget.id)[0]
       this.showModal();
-      console.log(this.current)
     },
 
     reload() {

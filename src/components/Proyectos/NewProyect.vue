@@ -36,7 +36,7 @@
         <option :value="employee.id" v-for="employee in employees">{{employee.name + ' ' + employee.lastname}}</option>
       </select>
     </div>
-    
+       
     <button class="btn btn-success" @click="newProyect($event)">Crear Proyecto</button>
 	</form>
 </template>
@@ -58,30 +58,33 @@ export default {
     }
   },
   methods: {
+    
       newProyect(e) {
         e.preventDefault();
+        let fm = new FormData()
 
+        fm.append("doc", this.form.doc)
        const bodyData = {
           ...new FormData(),
-          ...this.form
-       }
+            ...this.form       }
         // formdata.append('user',this.user);
         // formdata.append('pass',this.pass);
       console.log(bodyData)
   	const headers = {
   		
         method: 'POST',
-       headers: {...new Headers(), 'Accept': 'application/json',
-          'Content-Type': 'application/json',
-         'Cache': 'no-cache',
-       },
+       headers: {...new Headers(),    'Cache': 'no-cache',    'Content-Type': 'application/json'
+    },
        mode: 'cors',
       credentials: 'include',
       body: JSON.stringify(bodyData)
-  	}
+}
+
+       
+        
         fetch("http://localhost:8081/rrhh_api/proyects/new", headers)
         .then(res => res.json())
-          .then(res => this.ok = res.auth)
+          .then(res => { console.log(res); this.ok = res.auth})
           .catch(x => console.warn(x))
           .finally(x => this.$emit('send'))
               this.form = {}

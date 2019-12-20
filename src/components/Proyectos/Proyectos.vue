@@ -15,53 +15,21 @@
         @close="closeModal">
         <template  slot="header"><h2 class="my-0">{{ isNew ? "Nuevo Proyecto" : current.denominacion}}</h2></template>
 			<NewProyect v-if="isNew" slot="body" @send="reload"/>
-      <section v-else slot="body" class="panel aside">
+      <section v-else slot="body" class="body-relative" style="position:relative">
+        <button style="position: absolute; right: 0; top: 0" @click="editable = true">edit</button>
+
         <div class="panel-header ">
 				<h3 role="title"> Nombre de proyecto </h3>
 				<ul>
-					<li><b> Descripcion  y pautas </b>descripcion</li>
-					<li><b> status </b>{{current.status}}</li>
-          <li><b> Fecha de Inicio </b>{{current.start_date}}</li>
-					<li><b> Fecha de finalizacion estimada </b>{{current.finish_date}}</li>
+          <li><b> Descripcion  y pautas </b><span id="description" @input="onInput($event)" ref="description" :contenteditable="editable">descripcion</span></li>
+          <li><b> status </b><span id="status" @input="onInput($event)" ref="status" :contenteditable="editable">{{current.status}}</span></li>
+          <li><b> Fecha de Inicio </b><span id="start_date" @input="onInput($event)" ref="start_date" :contenteditable="editable">{{current.start_date}}</span></li>
+          <li><b> Fecha de finalizacion estimada </b><span id="finish_date" @input="onInput($event)" ref="finish_date" :contenteditable="editable">{{current.finish_date}}</span></li>
 					<li><b> Duracion (estimada) </b>ni idea we</li>
         </ul>
-        <details>
-        <form action="">
-          <input placeholder="descripcion" required type="text" v-model="newTask.title"> 
-          <label>Fecha de entrega
-          <input type="date"  v-model="newTask.due_date">
-        </label>
-        <label> asignado a
-          <select id="" name=""  v-model="newTask.asignee"><option  v-for="employee in employees" :value="employee.id">{{employee.name + " " + employee.lastname}}</option></select>
-          </label>
-          <textarea v-model="newTask.description" id="" name="" placeholder="escriba una descripcion detallada" cols="30" rows="3"></textarea>
-
-          <label for="">
-            Estado de la tarea
-            <select id="" required name="" v-model="newTask.status">
-              <option value="1">Completado</option>
-              <option value="2">Por completar</option>
-              <option value="3">En proceso</option>
-              <option value="4">No aplica</option>
-              <option value="0">Eliminado</option>
-          </select>
-        </label>
-          <button @click="createTask($event)">Nueva Tarea</button>
-        </form>
-        </details>
-        </div>
-        <div class="panel-body">
-        <h5> Tareas</h5>
-          <ul>
-            <li v-for="task in taskList" :key="task.id" class="card">
-              <div class="card-header">{{task.title}}</div>
-              <div class="card-body">{{task.description}}
-                <b>{{currentEmployee(task.asignee)}}</b>
-              </div>
-            </li>
-          </ul>
-        </div>
-			</section>
+      </div>
+            <Tasks :proyect="current.keyname"/>
+       			</section>
 		</Window>
 	</aside>
 </template>
@@ -70,6 +38,7 @@
 
 import {projects, tasks, employees} from '../../tools/alls'
 import NewProyect from './NewProyect'
+import Tasks from '../Tasks/Tasks'
 // import rrhhReq from './server/config'
 
 export default {
@@ -78,9 +47,26 @@ export default {
     msg: String
   },
   components: {
-  	NewProyect
+    NewProyect
+    , Tasks
   },
   methods: {
+onFile(e) {
+        var files = e.target.files || e.dataTransfer.files;
+        if (!files.length)
+          return;
+      this.form.doc = files[0]
+      console.log(files)
+      },
+    onInput(e) {
+      this.toEdit[e.currentTarget.id] = e.target.innerText
+    },
+    cancel () {
+      this.editable = false
+      Object.keys(this.toEdit).forEach(x => this.$refs[x].innerText  = this.current[x])
+         this.toEdit = {}
+    },
+
     createTask(e) {
       const self = this
         e.preventDefault();
@@ -92,7 +78,6 @@ export default {
        }
         // formdata.append('user',this.user);
         // formdata.append('pass',this.pass);
-      console.log(bodyData)
   	const headers = {
   		
       method: 'POST',  
@@ -110,7 +95,6 @@ export default {
           .catch(x => console.warn(x))
           .finally(x => {
               tasks(self.current.keyname).then(function(res){
-              console.log(res)
               self.taskList = res
               return res;
             })
@@ -122,18 +106,18 @@ export default {
     description(e) {
       this.isNew = false;
       this.current = this.projects.filter(x => x.keyname == e.currentTarget.id)[0]
+      console.log(this.current)
       const self = this
       tasks(e.currentTarget.id).then(function(res){
-        console.log(res)
         self.taskList = res
         return res;
       })
       this.showModal();
+      console.log(this.current.keyname)
     },
     reload() {
       var self = this;
        projects().then(function(res){
-      console.log(res)
       self.projects = res
      return res; 
     })
@@ -159,7 +143,6 @@ export default {
       },
      currentEmployee (x){
       let emp = this.employees.filter(y=> y.id == x)[0]
-        console.log(this.employees, emp)
       return emp.name + " " + emp.lastname
     }
     },
@@ -171,7 +154,8 @@ export default {
         current : {},
         taskList: [],
         employees : [],
-        newTask: {}
+        newTask: {},
+        editable: false
       }   
   },
   computed: {
@@ -179,12 +163,10 @@ export default {
   mounted() {
       var self = this;
        projects().then(function(res){
-      console.log(res)
       self.projects = res
      return res; 
     })
     employees().then(function(res){
-      console.log(res)
       self.employees = res
      return res; 
     })
