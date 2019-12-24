@@ -1,4 +1,4 @@
-
+import {env} from "./env.js"
  const projects = function(){
     const headers = {
   		
@@ -13,7 +13,7 @@
      var result;
      
      
-    return  fetch("http://localhost:8081/rrhh_api/projects/all", headers)
+    return  fetch("http://" + env.ip + ":8081/rrhh_api/projects/all", headers)
         .then(res => res.json())
           .then(res =>  res)
 }
@@ -29,7 +29,7 @@ const employees = function(){
        mode: 'cors',
       credentials: 'include'
   	}
-       return fetch("http://localhost:8081/rrhh_api/employees/all", headers)
+       return fetch("http://" + env.ip + ":8081/rrhh_api/employees/all", headers)
         .then(res => res.json())
           .then(res => res)
           .catch(x => console.warn(x))
@@ -51,7 +51,7 @@ const tasks = function(id){
             id :id 
         })
   	}
-       return fetch("http://localhost:8081/rrhh_api/tasks/all", headers)
+       return fetch("http://" + env.ip + ":8081/rrhh_api/tasks/all", headers)
         .then(res => res.json())
           .then(res => res)
           .catch(x => console.warn(x))

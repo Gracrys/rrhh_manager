@@ -10,11 +10,23 @@ const db =  require("./server/db_config")
  const fs = require('fs');
 //
 
-var multer  = require('multer')({dest: "public/docs/", 
+var multer  = require('multer')
+
+
+var storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+    cb(null, 'public/docs/')
+  },
+    
     filename: function (req, file, cb) {
-    cb(null, file.fieldname + '-' + Date.now() + file.originalname.match(/\.[0-9a-z]+$/i)[0])
-  }
+    cb(null, file.originalname )
+
+        return file.originalname 
+        }
 })
+
+var upload = multer({storage})
+
 e.use(cors({
     origin: true,
     credentials: true }));
@@ -79,7 +91,7 @@ e.post('/rrhh_api/proyects/new',  function(req,res){
     let {id, denominacion, description ,start_date, finish_date, status, employees, promotor} = req.body
     const docs = __dirname + "/public/files"
 
-    sql = `INSERT INTO proyects (keyname,denominacion, start_date, finish_date,status, employees_id, promotor_id, description) VALUES ('${id}', '${denominacion}', '${start_date}', '${finish_date}', '${status}', '${employees ? employees : ""}', '${promotor ? promotor : ""}', ${description ? description : ""})`;
+    sql = `INSERT INTO proyects (keyname,denominacion, start_date, finish_date,status, employees_id, promotor_id, description) VALUES ('${id}', '${denominacion}', '${start_date}', '${finish_date}', '${status}', '${employees ? employees : ""}', '${promotor ? promotor : ""}', '${description ? description : ""}')`;
   db.query(sql, function (err, result) {
     if (err) throw err;
       res.send("1 proyect added")
@@ -90,7 +102,7 @@ e.post('/rrhh_api/proyects/new',  function(req,res){
 });
 
 
-e.post('/rrhh_api/proyects/nex', multer.single("doc") ,function(req,res){
+e.post('/rrhh_api/proyects/nex', upload.single("doc") ,function(req,res){
 console.log(req.file)
     let {id, denominacion, start_date, finish_date, status, employees, promotor} = req.body
     const docs = __dirname + "/public/files"
@@ -130,26 +142,45 @@ e.post('/rrhh_api/task/new', function(req,res){
         }else{
            actualDate = (`${year}-${month}-${day}`)
         }
-console.log(req.body, actualDate)
     let {due_date, title, proyect, description, asignee, status} = req.body
 
-    sql = `INSERT INTO tasks (created_at, due_date, title, proyect, description, asignee, status) VALUES ('${actualDate}','${due_date}', '${title}', '${proyect}', '${description ? description : " " }', '${asignee ? asignee : ""}', ${status})`;
+    sql = `INSERT INTO tasks (created_at, due_date, title, proyect, description, asignee, status) VALUES ('${actualDate}','${due_date}', '${title ? title : " "}', '${proyect}', '${description ? description : " " }', '${asignee ? asignee : ""}', ${status})`;
   db.query(sql, function (err, result) {
     if (err) throw err;
       res.send("one task added")
   }); 
 })
 
-e.post('/rrhh_api/docs/new', multer.single("doc") ,function(req,res){
+e.post('/rrhh_api/docs/new', upload.single("doc") ,function(req,res){
 console.log(req.file)
-    let { creation_date, task , description} = req.body
+    let {taskDescription , description} = req.body
+    
+    let date = new Date()
+
+        let day = date.getDate()
+        let month = date.getMonth() + 1
+        let year = date.getFullYear()
+    var actualDate = "";
+        if(month < 10){
+          actualDate = (`${year}-0${month}-${day}`)
+        }else{
+           actualDate = (`${year}-${month}-${day}`)
+        }
+
     const docs = __dirname + "/public/files"
-console.log(req.body, req.files)
-    sql = `INSERT INTO docs (creation_date, type, task, file, description ) VALUES ('${creation_date}', '${req.file.mimetype}', ${task}, '${req.file.filename}', '${description}')`;
-  /*db.query(sql, function (err, result) {
+
+sqllookthru = "select id from tasks where description = '"+ taskDescription +"';"
+  db.query(sqllookthru, function (err, result) {
     if (err) throw err;
-      res.send("1 proyect added")
-  });*/
+      console.log("hey man", sqllookthru ,result[0].id)
+
+    sql = `INSERT INTO docs (creation_date, type, task, file, description ) VALUES ('${actualDate}', '${req.file.mimetype}', ${result[0].id}, '${req.file.filename}', '${description}');`;
+         db.query(sql, function(err, resx){
+      console.log(resx, ">>", err)
+      console.log(sql)
+      res.send("1 doc added")
+        })
+  });
 
 });
 
@@ -164,14 +195,14 @@ Object.keys(req.body).forEach((x, i, l) => {
         if(i == l.length - 1)
             rows += `${x} = '${req.body[x]}'`
         else
-            rows += `${x} = '${req.body[x]}'`
+            rows += `${x} = '${req.body[x]}' , `
     } 
 
 
 })
 console.log(req.body)
 
-    sql = `UPDATE proyects SET ${rows} WHERE id = ${req.body.id};`
+    sql = `UPDATE employees SET ${rows} WHERE id = ${req.body.id};`
 
 console.log(sql)
   db.query(sql, function (err, result) {
@@ -184,21 +215,21 @@ console.log(sql)
 e.post('/rrhh_api/proyects/update', function(req,res){
 
     let rows = "";
-
+    console.log(req.body)
 Object.keys(req.body.update).forEach((x, i, l) => {
-    if(x != "id"){
-            
+    if(x != "keyname"){
+           console.log(l) 
         if(i == l.length - 1)
-            rows += `${x} = '${req.body[x]}'`
+            rows += `${x} = '${req.body.update[x]}'`
         else
-            rows += `${x} = '${req.body[x]}'`
+            rows += `${x} = '${req.body.update[x]}' , `
     } 
 })
-console.log(req.body)
 
-    sql = `UPDATE proyects SET ${rows} WHERE id = ${req.body.id};`
+    sql = `UPDATE proyects SET ${rows} WHERE keyname = '${req.body.keyname}';`
 
 console.log(sql)
+
   db.query(sql, function (err, result) {
     if (err) throw err;
       res.send("1 proyect updated")
@@ -213,9 +244,9 @@ Object.keys(req.body.update).forEach((x, i, l) => {
     if(x != "id"){
             
         if(i == l.length - 1)
-            rows += `${x} = '${req.body[x]}'`
+            rows += `${x} = '${req.body.update[x]}'`
         else
-            rows += `${x} = '${req.body[x]}'`
+            rows += `${x} = '${req.body.update[x]}' , `
     } 
 
 })
@@ -259,6 +290,30 @@ e.post('/rrhh_api/tasks/all', function(req,res){
   }); 
 })
 
+e.post('/rrhh_api/docs/all', function(req,res){
+        console.log(req.body)
+        const {id} = req.body
+    sql = `select * from docs where task = '${id ? id : 0 }'`;
+  db.query(sql, function (err, result) {
+    if (err) throw err;
+      res.json(result)
+  }); 
+})
+
+
+ 
+e.post('/rrhh_api/projects/id', function(req,res){
+        console.log(req.body)
+        const {id} = req.body
+const         regexp = new RegExp('((?<!\\d)'+ id +'(?!\\d))', 'gm')
+     sql = `select * from proyects where employees_id like '%${id ? id : 0}%' OR promotor_id = ${id ? id: 0}`;
+    console.log(sql)
+  db.query(sql, function (err, result) {
+    if (err) throw err;
+      res.json(result.filter(x => x.employees_id.match(regexp)))
+  }); 
+})
+
 
 e.get('/test',function(req,res){
   res.send(req.cookies)
@@ -280,4 +335,4 @@ e.use(function(err, req, res, next){
 });
 
 
-e.listen(8081);
+e.listen(8081, "localhost", () => console.log("going through the server wooooo!!"));

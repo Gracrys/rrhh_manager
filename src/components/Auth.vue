@@ -4,15 +4,16 @@
     <h1>Inicie Sesion</h1>
     <hr>
     <form @:submit.prevent action="http://localhost:8081/auth" method="post">
-      <input type="text" v-model="user" placeholder="Nombre de usuario" name="name" >
-      <input type="password" v-model="pass" placeholder="contraseña" name="pass" >
-      <button @click="auth($event)">Entrar</button>
+      <input type="text"  class="input" v-model="user" placeholder="Nombre de usuario" name="name" >
+      <input type="password" v-model="pass" class="input" placeholder="contraseña" name="pass" >
+      <button @click="auth($event)" class="btn ">Entrar</button>
     </form>
   </dialog>
   </object>
 </template>
 
 <script>
+import {env} from '../tools/env.js'
   export default {
     name: 'Auth',
     data() {
@@ -46,7 +47,7 @@
       credentials: 'include',
       body: JSON.stringify(bodyData)
   	}
-        fetch("http://localhost:8081/auth", headers)
+        fetch("http://" + env.ip + ":8081/auth", headers)
         .then(res => res.json())
           .then(res => this.ok = res.auth)
           .catch(x => console.warn(x))
@@ -54,11 +55,13 @@
       }      
     },
     mounted( ){
-     this.ok = document.cookie.includes("secretSessionValidator") 
+      this.ok = document.cookie.includes("secretSessionValidator")
+      console.warn(document.cookie)
     },
     props: {
         }
   };
 </script>
 <style lang="sass" scoped>
+
 </style>

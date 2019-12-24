@@ -1,59 +1,63 @@
 <template>
   <form action="" class="form-group card-body ">
-    <div class="form-group columns">
+    <div class="field my-2 columns">
       <label class="form-label form-inline column col-6" for="">
         Cedula o Documento de Identidad
     </label>
-		<input type="number" class="form-input column col-6" name="ci" v-model="form.CI">
+		<input type="number" class="form-input column col-6 input is-small" name="ci" v-model="form.CI">
       </div>
-    <div class="form-group columns">
+    <div class="field my-2 columns">
       <label class="form-label form-inline column col-6" for="">
        Nombre 
       </label>
-      <input type="text" class="form-input column col-6" name="name" v-model="form.name">
+      <input type="text" class="form-input column col-6 input is-small" name="name" v-model="form.name">
     </div>
-    <div class="form-group columns">
+    <div class=" field my-2  columns">
     <label class="form-label form-inline column col-6" for="">
       Apellido
     </label>
-    <input type="text" class="form-input column col-6" name="apellido" v-model="form.last_name">
+    <input type="text" class="form-input column col-6 input is-small" name="apellido" v-model="form.last_name">
 </div>
-<div class="form-group columns">
+<div class=" field my-2  columns">
   <label class="form-label form-inline column col-6" for="">
     Direccion
   </label>
-  <input type="text" class="form-input column col-6" name="address" v-model="form.address">
+  <input type="text" class="form-input column col-6 input is-small" name="address" v-model="form.address">
  </div>
-<div class="form-group columns">
+<div class="field my-2  columns">
   <label class="form-label form-inline column col-6" for="">
     Especialidad
   </label>
-  <input type="text" class="form-input column col-6" name="speciality" v-model="form.speciality">
+  <input type="text" class="form-input column col-6 input is-small" name="speciality" v-model="form.speciality">
 </div>
 
-<div class="form-group columns">
+<div class="field my-2  columns">
   <label class="form-label form-inline column col-6" for="">
     Numero de Telefono
   </label>
-  <input type="tel" class="form-input column col-6" name="telephone" v-model="form.telephone">
+  <input type="tel" class="form-input column col-6 input is-small" name="telephone" v-model="form.telephone">
 </div>
-<div class="form-group columns">
+<div class="field my-2  columns">
   <label class="form-label form-inline column col-6" for="">
     Correo Electronico
   </label>
-  <input type="email" class="form-input column col-6" name="email" v-model="form.email">
+  <input type="email" class="form-input column col-6 input is-small" name="email" v-model="form.email">
 </div>
-<div class="form-group columns">
+<div class="field my-2  columns">
   <label class="form-label form-inline column col-6" for="">
     Fecha de Inicio
   </label>
-  <input type="date" class="form-input column col-6" name="initial_date" v-model="form.initial_date">
+  <input type="date" class="form-input column col-6 input is-small" name="initial_date" v-model="form.initial_date">
 </div>
 	 <button class="btn btn-success float-right" @click="newEmployee($event)">Nuevo Empleado</button>
 	</form>
 </template>
 
 <script>
+import {env} from '../../tools/env.js'
+
+
+
 export default {
   name: 'NewEmpleado',
  data() {
@@ -92,7 +96,7 @@ export default {
       credentials: 'include',
       body: JSON.stringify(bodyData)
   	}
-        fetch("http://localhost:8081/rrhh_api/employees/new", headers)
+        fetch("http://" + env.ip + ":8081/rrhh_api/employees/new", headers)
         .then(res => res.json())
           .then(res =>{ this.form = {}
           })

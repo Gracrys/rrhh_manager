@@ -1,6 +1,6 @@
 <template>
   <header>
-    X
+    <center> PROYECTS MANAGEMENT </center>
   </header>
 </template>
 
@@ -15,8 +15,10 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="scss">
-  header{
-      height: 80px;
-      // width: 100vw;
-      background-color: var(--secondary);}
+header{
+  height: 80px;
+  // width: 100vw;
+  background-color: var(--secondary);
+  color: white;
+}
 </style>

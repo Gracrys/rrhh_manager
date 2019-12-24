@@ -2,52 +2,101 @@
     <div>
     <div>
 	        <details>
-        <form action="" v-on:submit.prevent>
-          <input placeholder="descripcion" required type="text" required v-model="newTask.title"> 
-          <label>Fecha de entrega
-          <input type="date"  v-model="newTask.due_date">
+            <summary>Crear nueva tarea</summary>
+        <form action="" v-on:submit.prevent class="px-2">
+          <div class="field is-grouped is-grouped-centered">
+          <textarea v-model="newTask.description " required id="" name="" class="p-2 mx-2" placeholder="escriba una descripcion detallada" cols="30" rows="3"></textarea>
+          <div class="control mx-2">
+          <label class="label is-small" style="background:transparent">Fecha de entrega
         </label>
-        <label> asignado a
-          <select id="" name=""  v-model="newTask.asignee"><option  v-for="employee in employees" :value="employee.id">{{employee.name + " " + employee.lastname}}</option></select>
+          <input type="date" class="input is-small" v-model="newTask.due_date">
+          </div>
+          </div>
+          <div class="field is-grouped is-grouped-centered">
+      <div class="field">
+          <div class="control mx-2">
+        <label class="label is-small" style="background:transparent"> asignado a
           </label>
-          <textarea v-model="newTask.description" id="" name="" placeholder="escriba una descripcion detallada" cols="30" rows="3"></textarea>
-
-          <label for="">
+            <div class="select is-small">
+          <select id="" name=""   v-model="newTask.asignee"><option  v-for="employee in employees" :value="employee.id">{{employee.name + " " + employee.lastname}}</option></select>
+        </div>
+        </div>
+      </div>
+      <div class="field">
+          <div class="control mx-2">
+          <label for="" class="label is-small" style="background:transparent">
             Estado de la tarea
-            <select id="" required name="" v-model="newTask.status">
+            </label>
+            <div class="select is-small">
+            <select id="" required name=""  v-model="newTask.status">
               <option value="1">Completado</option>
               <option value="2">Por completar</option>
               <option value="3">En proceso</option>
               <option value="4">No aplica</option>
               <option value="0">Eliminado</option>
-              </select>
-          <div class="form-group columns"> 
+            </select>
+          </div>
+          </div>
+          </div>
+          </div>
+            <hr>
+          <div class="field is-grouped is-grouped-centered">
+            <div class="control">
       <label for="doc" class="form-label form-inline column col-6">Documento</label>
-        <input type="file" name="doc" @change="onFile($event)" class="form-file column col-6">
-    </div>
+      <textarea class="textarea" id="" name="" v-model="description"  rows="2"></textarea>
+            </div>        
+            <div class="file is-primary has-name is-boxed">
+  <label class="file-label">
+    <input type="file" name="doc" @change="onFile($event)" class="form-file file-input column col-6">
+    <span class="file-cta">
+      <span class="file-icon">
+        <i class="fas fa-upload"></i>
+      </span>
+      <span class="file-label">
+        Choose a file…
+      </span>
+    </span>
+    <span class="file-name">
+      {{doc.name ? doc.name : "Seleccione un archivo"}}
+    </span>
 
+  </label>
+</div>
+    </div>
         </label>
         <button  @click="createTask($event)" >Nueva Tarea</button>
         </form>
         </details>
         </div>
-        <div class="panel-body">
+        <div class="panel-body" >
         <h5> Tareas</h5>
-          <ul>
-            <li v-for="task in taskList" :key="task.id" class="card">
-              <div class="card-header">{{task.title}}</div>
-              <div class="card-body">{{task.description}}
-                <b>{{currentEmployee(task.asignee)}}</b>
+          <ul class="py-2" v-if="taskList.length">
+            <li v-for="task in taskList" @click="info($event)" :key="task.id" :id="task.id" class="card">
+              <div class="card-header">{{task.description}}
+                  </div>
+                <div class="card-header">            
+                  <b>{{currentEmployee(task.asignee)}}</b>
               </div>
             </li>
           </ul>
+          <strong v-else> No tienes tareas pendientes </strong>
         </div>
-      </div>
+        <Window 
+      position="right"
+			 v-show="isModalVisible"
+        @close="closeModal">
+        <template  slot="header"><h2 class="my-0">Tarea #{{task[0] ? task[0].id : ""}}</h2></template>
+         <Task :task="task[0]" slot="body"/> 
+		</Window>
+
+        </div>
     </template>
 
 <script>
 
+import {env} from '../../tools/env.js'
 import {projects, tasks, employees} from '../../tools/alls'
+import Task from './Task'
 // import rrhhReq from './server/config'
 
 export default {
@@ -56,6 +105,7 @@ export default {
     msg: String
   },
   components: {
+    Task
   },
   methods: {
     onFile(e) {
@@ -75,13 +125,15 @@ export default {
     },
 
     createTask(e) {
-
-      if(form.title && form.status){
+console.log(this.proyect)
+      if(this.newTask.description && this.newTask.status){
+        e.preventDefault();
       const self = this
        const bodyData = {
           ...new FormData(),
+                  proyect: this.proyect,
+
          ...this.newTask,
-         proyect: this.current.keyname
        }
         // formdata.append('user',this.user);
         // formdata.append('pass',this.pass);
@@ -96,7 +148,7 @@ export default {
       credentials: 'include',
       body: JSON.stringify(bodyData)
   	}
-        fetch("http://localhost:8081/rrhh_api/task/new", headers)
+        fetch("http://"+ env.ip +":8081/rrhh_api/task/new", headers)
         .then(res => res.json())
           .then(res => this.ok = res.auth)
           .catch(x => console.warn(x))
@@ -106,30 +158,45 @@ export default {
               return res;
             })
           })
-              this.newTask = {}
       
-      if(this.doc != ''){
-
+      if(this.doc != '' ){
+console.log("help")
         delete headers.headers['Content-Type']
         let fm = new FormData()
         
 
         fm.append("doc", this.doc)
+        fm.append("description", this.description)
+        fm.append("taskDescription", this.newTask.description )
 
         headers.body = fm
         console.log(headers)
-        fetch("http://localhost:8081/rrhh_api/docs/new", headers)
+        fetch("http://" + env.ip + ":8081/rrhh_api/docs/new", headers)
         .then(res => res.json())
           .then(res => this.ok = res.auth)
           .catch(x => console.warn(x))
           .finally(x => this.doc = "")
       }
+              this.newTask = {}
     }
    }, 
      currentEmployee (x){
-      let emp = this.employees.filter(y=> y.id == x)[0]
-      return emp.name + " " + emp.lastname
+       let emp = this.employees.filter(y=> y.id == x)[0]
+       return  emp ?  emp.name   + " " + emp.lastname : "noname"
+     },
+    showModal() {
+        if(!this.editable)
+        this.isModalVisible = true;
+      },
+      closeModal() {
+        if(!this.editable)
+        this.isModalVisible = false;
+      },
+    info($event){
+      this.task = this.taskList.filter(x => $event.currentTarget.id == x.id)
+      this.showModal()
     }
+      
     },
      data () {
       return {
@@ -139,9 +206,13 @@ export default {
         current : {},
         taskList: [],
         employees : [],
-        newTask: {},
+        task: {},
+        newTask: {
+          status: 2
+        },
         editable: false,
-        doc: ""
+        doc: "",
+        description: ""
       }   
   },
   props: {
@@ -157,6 +228,7 @@ export default {
 
         tasks(newValue).then(function(res){
           self.taskList = res
+                console.warn("conseguiste uno", res)
         return res;
       })
 

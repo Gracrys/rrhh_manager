@@ -2,7 +2,7 @@ import trae from 'trae'
 
 
 const configService = {
-	apiUrl: "localhost:8081"
+	apiUrl: "10.10.1.120:8081"
 }
 
 
