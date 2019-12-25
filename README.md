@@ -30,9 +30,4 @@ See [Configuration Reference](https://cli.vuejs.org/config/).
 
 ## TO DO
 
-[x] Done functionality
-[X] Gonna work on some transitions for slider
-[X] Form components
-[ ] Api consumption
-[X] and conditional render for slider or window or whatever
-[ ] edit data on doble click
+[ ] Working on User details (creating and managing user accounts)
