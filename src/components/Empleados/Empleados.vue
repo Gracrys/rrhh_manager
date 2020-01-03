@@ -17,7 +17,7 @@
 			<NewEmpleado v-if="isNew" slot="body" @send="reload"/>
 
       <section v-else slot="body" class="body-relative" style="position:relative">
-        <button style="position: absolute; right: 0; top: 0" @click="editable = true">edit</button>
+        <button style="position: absolute; right: 0; top: 0" @click="()=>{if(currentUser.admin_type !== 3)editable = true}">edit</button>
         <h5 role="title"><b>Datos:</b></h5>
         <ul>
           <li v-if="editable"><b  >Nombre y apellido: </b> <span id="name" @input="onInput($event)" ref="name" :contenteditable="editable">{{current.name + "  "}}</span>
@@ -168,6 +168,11 @@ export default {
         toEdit: {},
         projects: []
       }   
+     },
+  computed: {
+    currentUser (){
+      return this.$store.state.currentUser
+    },
   }
 }
 </script>

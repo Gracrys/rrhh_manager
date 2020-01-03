@@ -100,14 +100,36 @@ export default {
       credentials: 'include',
       body: JSON.stringify(bodyData)
   	}
-      if(Object.entries(this.toEdit).length > 0) {fetch("http://" + env.ip + ":8081/rrhh_api/tasks/update", headers)
-        .then(res => res.json())
+      if(Object.entries(this.toEdit).length > 0) {
+
+
+
+        fetch("http://" + env.ip + ":8081/rrhh_api/tasks/update", headers)
+          .then(res => res.json())
           .then(res => res )
           .catch(x => console.warn(x))
           .finally(x => this.$emit('send'))
       }
       
-        /*      if(Object.entries(this.newDoc).length > 0) {fetch("http://" + env.ip + ":8081/rrhh_api/docs/update", headers)
+      if(Object.entries(this.newDoc).length > 0) {
+        console.log("help")
+        delete headers.headers['Content-Type']
+        let fm = new FormData()
+
+
+        fm.append("doc", this.newDoc.file)
+        fm.append("description", this.newDoc.description)
+        fm.append("taskDescription", this.task.id )
+
+        headers.body = fm
+        fetch("http://" + env.ip + ":8081/rrhh_api/docs/update", headers)
+          .then(res => res.json())
+          .then(res => this.ok = res.auth)
+          .catch(x => console.warn(x))
+          .finally(x => this.doc = "")
+      }
+/*
+      fetch("http://" + env.ip + ":8081/rrhh_api/docs/update", headers)
         .then(res => res.json())
           .then(res => res )
           .catch(x => console.warn(x))
@@ -120,12 +142,12 @@ export default {
 
     },
     onFile(e) {
-        var files = e.target.files || e.dataTransfer.files;
-        if (!files.length)
-          return;
+      var files = e.target.files || e.dataTransfer.files;
+      if (!files.length)
+        return;
       this.newDoc.file = files[0]
       console.log(files)
-      },
+    },
 
   showModal() {
         if(!this.editable)

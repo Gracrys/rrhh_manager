@@ -30,4 +30,4 @@ See [Configuration Reference](https://cli.vuejs.org/config/).
 
 ## TO DO
 
-[ ] Working on User details (creating and managing user accounts)
+[ ] working on a clse button for the modal

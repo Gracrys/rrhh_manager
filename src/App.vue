@@ -5,11 +5,6 @@
     <Proyectos></Proyectos>
     <Empleados></Empleados>
 
-    <Window
-        v-show="isModalVisible"
-        @close="closeModal"
-        position="left"
-      />
     </section>
     <Auth />
   </main>
@@ -19,6 +14,7 @@
 import HelloWorld from './components/HelloWorld.vue'
 import Header from './components/header/Header.vue'
 import Window from './components/Window.vue'
+import Modal from './components/Modal.vue'
 import Proyectos from './components/Proyectos/Proyectos'
 import Empleados from './components/Empleados/Empleados'
 import Auth from './components/Auth.vue'

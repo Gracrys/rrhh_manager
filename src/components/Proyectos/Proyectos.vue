@@ -19,7 +19,7 @@
 
         <div class="panel-header ">
           <details style="position:relative">
-        <button style="position: absolute; right: 0; top: 0" @click="editable = true">edit</button>
+            <button style="position: absolute; right: 0; top: 0" @click="() =>{if(currentUser.admin_type !== 3) editable = true}">edit</button>
           <h3 role="title" id="denominacion" @input="onInput($event)" ref="denominacion" :contenteditable="editable"> {{current.denominacion}} </h3>
 				<ul>
           <li><b> Descripcion  y pautas </b><span id="description" @input="onInput($event)" ref="description" :contenteditable="editable">{{current.description ? current.description : "descripción "}}</span></li>
@@ -180,7 +180,10 @@ export default {
       }   
   },
   computed: {
-  } ,
+    currentUser (){
+      return this.$store.state.currentUser
+    },
+  },
   mounted() {
       var self = this;
        projects().then(function(res){
